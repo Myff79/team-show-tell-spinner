@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎯 Team Show & Tell Spinner</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: Arial, sans-serif;
+            color: white;
+            min-height: 100vh;
+        }
+
+        .main-container {
+            display: grid;
+            grid-template-columns: 1fr 400px 300px;
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+            height: 100vh;
+            align-items: start;
+            padding-top: 20px;
+        }
+
+        .wheel-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+        }
+
+        .announcement-section {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .stats-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        #wheelContainer {
+            position: relative;
+            margin: 20px 0;
+        }
+
+        #wheel {
+            border: 6px solid #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .pointer {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 30px solid #ff6b6b;
+            z-index: 10;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+
+        .spin-button {
+            background: linear-gradient(135deg, #ff6b6b, #ffa500);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+            transition: all 0.3s ease;
+            margin: 20px;
+            font-weight: bold;
+        }
+
+        .spin-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.6);
+        }
+
+        .spin-button:disabled {
+            background: #666;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .winner-announcement {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            color: #ffd700;
+        }
+
+        .host-title {
+            font-size: 1.3em;
+            color: #ffa500;
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+
+        .gif-container {
+            margin: 20px 0;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            max-width: 280px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .gif-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .stats-header {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #ffd700;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stat-number {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #ffa500;
+        }
+
+        .hosting-list {
+            margin-top: 20px;
+        }
+
+        .hosting-entry {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px;
+            margin: 5px 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+
+        .small-button {
+            background: linear-gradient(135deg, #4ECDC4, #44A08D);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .reset-button {
+            background: linear-gradient(135deg, #666, #888);
+            opacity: 0.7;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 60%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-20px); }
+            80% { transform: translateY(-10px); }
+        }
+
+        .animated {
+            animation: bounce 1s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- Wheel Section -->
+        <div class="wheel-section">
+            <h1>🎯 Team Spinner</h1>
+            <p>Who's hosting the next show & tell?</p>
+            
+            <div id="wheelContainer">
+                <div class="pointer"></div>
+                <canvas id="wheel" width="400" height="400"></canvas>
+            </div>
+            
+            <button class="spin-button" id="spinBtn" onclick="spin()">🎰 SPIN THE WHEEL</button>
+            
+            <div class="controls">
+                <button class="small-button" id="musicBtn" onclick="toggleMusic()">🎵 Music: ON</button>
+                <button class="small-button reset-button" onclick="resetStats()">🔄 Reset Stats</button>
+            </div>
+        </div>
+
+        <!-- Announcement Section -->
+        <div class="announcement-section" id="announcementArea">
+            <div style="font-size: 1.2em; opacity: 0.8;">Ready to spin!</div>
+            <div style="font-size: 0.9em; margin-top: 10px;">Click the button to select your next host 🎯</div>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="stats-section">
+            <div class="stats-header">📊 Statistics</div>
+            
+            <div class="stat-item">
+                <span>Total Spins</span>
+                <span class="stat-number" id="totalSpins">0</span>
+            </div>
+            
+            <div class="stat-item">
+                <span>Teams Hosted</span>
+                <span class="stat-number" id="teamsHosted">0</span>
+            </div>
+            
+            <div class="hosting-list">
+                <div style="font-weight: bold; margin-bottom: 10px; text-align: center;">🏆 Hosting History</div>
+                <div id="hostingHistory">
+                    <div style="opacity: 0.6; text-align: center; font-size: 0.8em;">No spins yet!</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const teams = [
+            { name: 'Visual Design', color: '#45B7D1' },
+            { name: 'Out of Meeting', color: '#4ECDC4' },
+            { name: 'Core UI Team', color: '#FF6B6B' },
+            { name: 'AI', color: '#FFA07A' },
+            { name: 'Visual Design', color: '#45B7D1' },
+            { name: 'Out of Meeting', color: '#4ECDC4' },
+            { name: 'Core UI Team', color: '#FF6B6B' },
+            { name: 'UXR', color: '#96CEB4' }
+        ];
+
+        const hostTitles = [
+            "🎭 The Chosen One",
+            "🎪 Master of Ceremonies", 
+            "⚡ The Unlucky Legend",
+            "🌟 Presentation Overlord",
+            "🎯 The Selected Sacrifice",
+            "🔥 Show & Tell Champion"
+        ];
+
+        const gifs = [
+            // Epic Movies
+            'https://media.giphy.com/media/3o84sw9CmwYpAnRRni/giphy.gif', // Star Wars celebration
+            'https://media.giphy.com/media/1136UBdSNn6Bu8/giphy.gif', // Indiana Jones
+            'https://media.giphy.com/media/7rj2ZgttvgomY/giphy.gif', // Back to the Future
+            'https://media.giphy.com/media/l4FGGafcOHmrlQxG0/giphy.gif', // Matrix Neo
+            'https://media.giphy.com/media/3oKIPf3C7HqqYBVcCk/giphy.gif', // Iron Man
+            'https://media.giphy.com/media/35HTaxVJWzp2QOShct/giphy.gif', // Avengers
+            
+            // Disney/Pixar
+            'https://media.giphy.com/media/VIPfTy8y1Lc5iREYDS/giphy.gif', // Lion King
+            'https://media.giphy.com/media/26BRBKqUiq586bRVm/giphy.gif', // Finding Nemo
+            'https://media.giphy.com/media/WuGSL4LFUMQU/giphy.gif', // Monsters Inc
+            'https://media.giphy.com/media/3o7qE2VAxuXWeyvJIY/giphy.gif', // Toy Story
+            'https://media.giphy.com/media/1kfhoNWHS7jMg/giphy.gif', // Mickey Mouse
+            
+            // SpongeBob
+            'https://media.giphy.com/media/l41lGvinEgARjB2HC/giphy.gif', // SpongeBob excited
+            'https://media.giphy.com/media/3o6UBlHJQT19wSgJQk/giphy.gif', // SpongeBob rainbow
+            'https://media.giphy.com/media/3oriO5t2QB4IPKgxHi/giphy.gif', // SpongeBob dancing
+            
+            // Ren & Stimpy
+            'https://media.giphy.com/media/12msOFU8oL1eww/giphy.gif', // Ren & Stimpy
+            'https://media.giphy.com/media/26tPnAAJxXTvpLwJy/giphy.gif', // Stimpy happy
+            
+            // Classic reactions
+            'https://media.giphy.com/media/26BRwW3ckGjcZmsxO/giphy.gif', // Simpsons Homer
+            'https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif', // Bugs Bunny
+            'https://media.giphy.com/media/3o7abKhOpu0NwenH3O/giphy.gif', // General celebration
+            'https://media.giphy.com/media/26FLdmIp6wJr91JAI/giphy.gif'  // Victory dance
+        ];
+
+        const canvas = document.getElementById('wheel');
+        const ctx = canvas.getContext('2d');
+        
+        let currentRotation = 0;
+        let spinning = false;
+        let musicEnabled = true;
+        let hostingHistory = JSON.parse(localStorage.getItem('teamHostingHistory')) || {};
+        let totalSpins = parseInt(localStorage.getItem('teamTotalSpins')) || 0;
+
+        function drawWheel(rotation = 0) {
+            const centerX = 200;
+            const centerY = 200;
+            const radius = 180;
+            const sliceAngle = (2 * Math.PI) / teams.length;
+            
+            ctx.clearRect(0, 0, 400, 400);
+            
+            for (let i = 0; i < teams.length; i++) {
+                const startAngle = i * sliceAngle + rotation;
+                const endAngle = (i + 1) * sliceAngle + rotation;
+                
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+                ctx.fillStyle = teams[i].color;
+                ctx.fill();
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 3;
+                ctx.stroke();
+                
+                // Add text
+                ctx.save();
+                ctx.translate(centerX, centerY);
+                ctx.rotate(startAngle + sliceAngle / 2);
+                ctx.fillStyle = 'white';
+                ctx.font = 'bold 16px Arial';
+                ctx.textAlign = 'center';
+                ctx.shadowColor = 'rgba(0,0,0,0.5)';
+                ctx.shadowBlur = 2;
+                
+                // Split text into multiple lines if needed
+                const text = teams[i].name;
+                const words = text.split(' ');
+                const lineHeight = 20;
+                
+                if (words.length <= 2) {
+                    ctx.fillText(text, radius * 0.65, 0);
+                } else {
+                    // Multi-line text for longer team names
+                    const line1 = words.slice(0, Math.ceil(words.length / 2)).join(' ');
+                    const line2 = words.slice(Math.ceil(words.length / 2)).join(' ');
+                    ctx.fillText(line1, radius * 0.65, -lineHeight / 2);
+                    ctx.fillText(line2, radius * 0.65, lineHeight / 2);
+                }
+                
+                ctx.restore();
+            }
+        }
+
+        function spin() {
+            if (spinning) return;
+            
+            spinning = true;
+            document.getElementById('spinBtn').disabled = true;
+            document.getElementById('announcementArea').innerHTML = '<div style="font-size: 1.5em;">🎰 Spinning...</div><div style="font-size: 0.9em; margin-top: 10px;">The wheel is deciding your fate!</div>';
+            
+            playSpinSound();
+            
+            const spins = 5 + Math.random() * 5;
+            const finalAngle = Math.random() * 2 * Math.PI;
+            const totalRotation = spins * 2 * Math.PI + finalAngle;
+            const targetRotation = currentRotation + totalRotation;
+            
+            const startTime = Date.now();
+            const duration = 3000;
+            const startRotation = currentRotation;
+            
+            function animate() {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // Easing function
+                const easeOut = 1 - Math.pow(1 - progress, 3);
+                const rotation = startRotation + totalRotation * easeOut;
+                
+                drawWheel(rotation);
+                
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    currentRotation = targetRotation;
+                    
+                    // Calculate winner based on where wheel actually landed
+                    const sliceAngle = (2 * Math.PI) / teams.length;
+                    
+                    // The pointer is at the top (12 o'clock position)
+                    // We need to find which slice the pointer is pointing to
+                    const pointerAngle = Math.PI / 2; // 90 degrees (top of wheel)
+                    const adjustedRotation = (-currentRotation + pointerAngle) % (2 * Math.PI);
+                    const normalizedAngle = adjustedRotation < 0 ? adjustedRotation + 2 * Math.PI : adjustedRotation;
+                    
+                    const sliceIndex = Math.floor(normalizedAngle / sliceAngle) % teams.length;
+                    const winner = teams[sliceIndex];
+                    
+                    // Debug logging
+                    console.log('Current rotation:', currentRotation);
+                    console.log('Normalized angle:', normalizedAngle);
+                    console.log('Slice index:', sliceIndex);
+                    console.log('Winner:', winner.name);
+                    
+                    showWinner(winner);
+                    updateStats(winner);
+                    
+                    spinning = false;
+                    document.getElementById('spinBtn').disabled = false;
+                    document.getElementById('spinBtn').textContent = '🎰 SPIN AGAIN';
+                }
+            }
+            
+            animate();
+        }
+
+        function showWinner(winner) {
+            const randomTitle = hostTitles[Math.floor(Math.random() * hostTitles.length)];
+            const randomGif = gifs[Math.floor(Math.random() * gifs.length)];
+            
+            document.getElementById('announcementArea').innerHTML = `
+                <div class="host-title">${randomTitle}</div>
+                <div class="gif-container">
+                    <img src="${randomGif}" alt="Reaction GIF">
+                </div>
+            `;
+            
+            playWinSound();
+        }
+
+        function updateStats(winner) {
+            totalSpins++;
+            
+            // Normalize team names for consistent tracking
+            let teamName = winner.name;
+            if (teamName === 'Core UI Team') teamName = 'Core UI';
+            if (teamName === 'Out of Meeting') teamName = 'Out of Meeting';
+            if (teamName === 'Visual Design') teamName = 'Visual Design';
+            if (teamName === 'UXR') teamName = 'UXR';
+            if (teamName === 'AI') teamName = 'AI';
+            
+            hostingHistory[teamName] = (hostingHistory[teamName] || 0) + 1;
+            
+            localStorage.setItem('teamHostingHistory', JSON.stringify(hostingHistory));
+            localStorage.setItem('teamTotalSpins', totalSpins.toString());
+            
+            refreshStatsDisplay();
+        }
+
+        function refreshStatsDisplay() {
+            document.getElementById('totalSpins').textContent = totalSpins;
+            document.getElementById('teamsHosted').textContent = Object.keys(hostingHistory).length;
+            
+            const historyContainer = document.getElementById('hostingHistory');
+            const entries = Object.entries(hostingHistory).sort(([,a], [,b]) => b - a);
+            
+            if (entries.length === 0) {
+                historyContainer.innerHTML = '<div style="opacity: 0.6; text-align: center; font-size: 0.8em;">No spins yet!</div>';
+            } else {
+                historyContainer.innerHTML = entries.map(([name, count]) => 
+                    `<div class="hosting-entry">
+                        <span>${name}</span>
+                        <span>${count}x</span>
+                    </div>`
+                ).join('');
+            }
+        }
+
+        function toggleMusic() {
+            musicEnabled = !musicEnabled;
+            document.getElementById('musicBtn').textContent = `🎵 Music: ${musicEnabled ? 'ON' : 'OFF'}`;
+        }
+
+        function resetStats() {
+            if (confirm('Reset all statistics? This cannot be undone!')) {
+                hostingHistory = {};
+                totalSpins = 0;
+                
+                localStorage.removeItem('teamHostingHistory');
+                localStorage.removeItem('teamTotalSpins');
+                
+                refreshStatsDisplay(); // Trigger stats update
+                
+                document.getElementById('announcementArea').innerHTML = '<div style="font-size: 1.2em;">📊 Stats reset!</div><div style="font-size: 0.9em; margin-top: 10px;">Ready for a fresh start 🚀</div>';
+            }
+        }
+
+        // Sound functions
+        function playSpinSound() {
+            if (!musicEnabled) return;
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(220, audioContext.currentTime);
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                
+                oscillator.type = 'triangle';
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.5);
+            } catch (e) {
+                // Audio not available
+            }
+        }
+
+        function playWinSound() {
+            if (!musicEnabled) return;
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const notes = [523, 659, 784];
+                notes.forEach((freq, i) => {
+                    setTimeout(() => {
+                        const oscillator = audioContext.createOscillator();
+                        const gainNode = audioContext.createGain();
+                        
+                        oscillator.connect(gainNode);
+                        gainNode.connect(audioContext.destination);
+                        
+                        oscillator.frequency.setValueAtTime(freq, audioContext.currentTime);
+                        gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                        
+                        oscillator.type = 'triangle';
+                        oscillator.start();
+                        oscillator.stop(audioContext.currentTime + 0.2);
+                    }, i * 100);
+                });
+            } catch (e) {
+                // Audio not available
+            }
+        }
+
+        // Initialize
+        function init() {
+            drawWheel();
+            refreshStatsDisplay(); // Initialize stats display
+        }
+
+        init();
+    </script>
+</body>
+</html>
