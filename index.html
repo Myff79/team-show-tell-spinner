@@ -3,402 +3,1473 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎯 Team Show & Tell Spinner</title>
+    <title>✨ Team Spinner Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body {
+        * {
             margin: 0;
-            padding: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            font-family: Arial, sans-serif;
-            color: white;
-            min-height: 100vh;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        .main-container {
-            display: grid;
-            grid-template-columns: 1fr 400px 300px;
-            gap: 20px;
+        :root {
+            --primary: #6366f1;
+            --primary-light: #8b5cf6;
+            --primary-dark: #4f46e5;
+            --secondary: #06b6d4;
+            --accent: #f59e0b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg-main: #0f0f23;
+            --bg-card: #1a1a3e;
+            --bg-glass: rgba(255, 255, 255, 0.05);
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+            --border: rgba(255, 255, 255, 0.1);
+            --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-main);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 60%, rgba(6, 182, 212, 0.05) 0%, transparent 50%);
+        }
+
+        /* Animated background particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: float 20s infinite linear;
+            opacity: 0.6;
+        }
+
+        .particle:nth-child(1) { left: 10%; animation-delay: 0s; }
+        .particle:nth-child(2) { left: 20%; animation-delay: 2s; background: var(--secondary); }
+        .particle:nth-child(3) { left: 30%; animation-delay: 4s; background: var(--accent); }
+        .particle:nth-child(4) { left: 40%; animation-delay: 6s; }
+        .particle:nth-child(5) { left: 50%; animation-delay: 8s; background: var(--primary-light); }
+        .particle:nth-child(6) { left: 60%; animation-delay: 10s; }
+        .particle:nth-child(7) { left: 70%; animation-delay: 12s; background: var(--secondary); }
+        .particle:nth-child(8) { left: 80%; animation-delay: 14s; }
+        .particle:nth-child(9) { left: 90%; animation-delay: 16s; background: var(--accent); }
+
+        @keyframes float {
+            0% { 
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+                transform: translateY(90vh) scale(1);
+            }
+            90% {
+                opacity: 0.6;
+                transform: translateY(10vh) scale(1);
+            }
+            100% { 
+                transform: translateY(-10vh) scale(0);
+                opacity: 0;
+            }
+        }
+
+        /* Main container */
+        .container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            gap: 3rem;
             max-width: 1400px;
             margin: 0 auto;
-            height: 100vh;
-            align-items: start;
-            padding-top: 20px;
+            position: relative;
+            z-index: 10;
         }
 
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .main-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light), var(--secondary));
+            background-size: 200% 200%;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 4s ease-in-out infinite;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        /* Main layout */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            width: 100%;
+            max-width: 1200px;
+            align-items: center;
+        }
+
+        /* Wheel section */
         .wheel-section {
             display: flex;
             flex-direction: column;
             align-items: center;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            gap: 2rem;
         }
 
-        .announcement-section {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 15px;
-            padding: 25px;
-            text-align: center;
-            min-height: 300px;
+        .wheel-card {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 2rem;
+            padding: 3rem;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .wheel-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(99, 102, 241, 0.1) 0%, 
+                rgba(139, 92, 246, 0.05) 50%, 
+                rgba(6, 182, 212, 0.1) 100%);
+            z-index: -1;
+        }
+
+        .wheel-container {
+            position: relative;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            align-items: center;
+            gap: 2rem;
         }
 
-        .stats-section {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 20px;
+        /* Modern pointer */
+        .modern-pointer {
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 40px solid var(--accent);
+            filter: drop-shadow(0 4px 12px rgba(245, 158, 11, 0.3));
+            margin-bottom: -15px;
+            z-index: 10;
+            animation: pointerGlow 2s ease-in-out infinite;
         }
 
-        h1 {
-            font-size: 2em;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-            text-align: center;
-        }
-
-        #wheelContainer {
-            position: relative;
-            margin: 20px 0;
+        @keyframes pointerGlow {
+            0%, 100% { filter: drop-shadow(0 4px 12px rgba(245, 158, 11, 0.3)); }
+            50% { filter: drop-shadow(0 4px 20px rgba(245, 158, 11, 0.6)); }
         }
 
         #wheel {
-            border: 6px solid #fff;
             border-radius: 50%;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
-        }
-
-        .pointer {
-            position: absolute;
-            top: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 0;
-            border-left: 15px solid transparent;
-            border-right: 15px solid transparent;
-            border-top: 30px solid #ff6b6b;
-            z-index: 10;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
-        }
-
-        .spin-button {
-            background: linear-gradient(135deg, #ff6b6b, #ffa500);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            font-size: 18px;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+            box-shadow: 
+                0 0 0 4px var(--bg-main),
+                0 0 0 8px var(--border),
+                0 20px 40px rgba(0, 0, 0, 0.3);
             transition: all 0.3s ease;
-            margin: 20px;
-            font-weight: bold;
+        }
+
+        #wheel:hover {
+            transform: scale(1.02);
+            box-shadow: 
+                0 0 0 4px var(--bg-main),
+                0 0 0 8px var(--primary),
+                0 25px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Modern spin button */
+        .spin-button {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: var(--text-primary);
+            border: none;
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 1rem;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .spin-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.2), 
+                transparent);
+            transition: left 0.6s;
         }
 
         .spin-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.6);
+            box-shadow: 0 12px 35px rgba(99, 102, 241, 0.4);
+        }
+
+        .spin-button:hover::before {
+            left: 100%;
+        }
+
+        .spin-button:active {
+            transform: translateY(0);
         }
 
         .spin-button:disabled {
-            background: #666;
+            background: linear-gradient(135deg, #374151, #4b5563);
             cursor: not-allowed;
             transform: none;
-            box-shadow: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
-        .winner-announcement {
-            font-size: 2.5em;
-            font-weight: bold;
-            margin-bottom: 15px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-            color: #ffd700;
+        /* Controls */
+        .controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
         }
 
-        .host-title {
-            font-size: 1.3em;
-            color: #ffa500;
-            font-style: italic;
-            margin-bottom: 20px;
+        .control-button {
+            background: var(--bg-glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            position: relative;
         }
 
-        .gif-container {
-            margin: 20px 0;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            max-width: 280px;
-            margin-left: auto;
-            margin-right: auto;
+        .control-button:hover {
+            background: var(--primary);
+            color: var(--text-primary);
+            border-color: var(--primary);
+            transform: translateY(-1px);
         }
 
-        .gif-container img {
+        /* Results section */
+        .results-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .results-card {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 2rem;
+            padding: 3rem;
             width: 100%;
-            height: auto;
-            display: block;
-        }
-
-        .stats-header {
-            font-size: 1.4em;
-            font-weight: bold;
-            margin-bottom: 20px;
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             text-align: center;
-            color: #ffd700;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
         }
 
-        .stat-item {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 12px;
-            border-radius: 8px;
-            margin: 10px 0;
+        .results-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(6, 182, 212, 0.05) 0%, 
+                rgba(139, 92, 246, 0.1) 50%, 
+                rgba(245, 158, 11, 0.05) 100%);
+            z-index: -1;
+        }
+
+        .winner-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .winner-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        /* Modern GIF frame */
+        .gif-frame {
+            border-radius: 1.5rem;
+            overflow: hidden;
+            margin: 2rem 0;
+            max-width: 100%;
+            max-height: 350px;
+            position: relative;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: scale(0.9) rotateY(10deg);
+            opacity: 0;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .gif-frame.show {
+            opacity: 1;
+            transform: scale(1) rotateY(0deg);
+        }
+
+        .gif-frame::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, 
+                rgba(99, 102, 241, 0.1), 
+                rgba(139, 92, 246, 0.1));
+            z-index: 1;
+            border-radius: 1.5rem;
+        }
+
+        .gif-frame img {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            display: block;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Loading states */
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border);
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-top: 1rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Status indicators */
+        .status-indicator {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--success);
+            animation: statusPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes statusPulse {
+            0%, 100% { 
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+            }
+            50% { 
+                transform: scale(1.1);
+                box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+            }
+        }
+
+        /* Confetti animation */
+        .confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: var(--primary);
+            animation: confettiFall 3s linear forwards;
+        }
+
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive design */
+        @media (max-width: 1024px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+            
+            .container {
+                padding: 1.5rem;
+            }
+            
+            .wheel-card,
+            .results-card {
+                padding: 2rem;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .main-title {
+                font-size: 2.5rem;
+            }
+            
+            .wheel-card,
+            .results-card {
+                padding: 1.5rem;
+                border-radius: 1.5rem;
+            }
+            
+            .spin-button {
+                padding: 0.875rem 2rem;
+                font-size: 1rem;
+            }
+        }
+
+        /* Accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Focus states */
+        .spin-button:focus,
+        .control-button:focus {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        /* Settings Panel */
+        .settings-panel {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background: var(--bg-card);
+            border-left: 1px solid var(--border);
+            z-index: 1000;
+            transition: right 0.3s ease;
+            overflow-y: auto;
+            backdrop-filter: blur(20px);
+        }
+
+        .settings-panel.open {
+            right: 0;
+        }
+
+        .settings-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .settings-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .settings-header {
+            padding: 2rem;
+            border-bottom: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .stat-number {
-            font-size: 1.5em;
-            font-weight: bold;
-            color: #ffa500;
+        .settings-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
         }
 
-        .hosting-list {
-            margin-top: 20px;
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
         }
 
-        .hosting-entry {
+        .close-btn:hover {
+            background: var(--bg-glass);
+            color: var(--text-primary);
+        }
+
+        .settings-content {
+            padding: 2rem;
+        }
+
+        .setting-group {
+            margin-bottom: 2rem;
+        }
+
+        .setting-label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .team-item {
+            background: var(--bg-glass);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .team-item:hover {
+            border-color: var(--primary);
+        }
+
+        .team-controls {
             display: flex;
-            justify-content: space-between;
-            padding: 8px;
-            margin: 5px 0;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 5px;
-            font-size: 0.9em;
+            gap: 0.5rem;
+            align-items: center;
+            margin-bottom: 0.75rem;
         }
 
-        .controls {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-            justify-content: center;
+        .team-input {
+            flex: 1;
+            background: var(--bg-main);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            font-family: inherit;
+            font-size: 0.9rem;
         }
 
-        .small-button {
-            background: linear-gradient(135deg, #4ECDC4, #44A08D);
+        .team-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .size-input {
+            width: 60px;
+            background: var(--bg-main);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            font-family: inherit;
+        }
+
+        .color-input {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            background: none;
+        }
+
+        .remove-team {
+            background: var(--danger);
             color: white;
             border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
         }
 
-        .reset-button {
-            background: linear-gradient(135deg, #666, #888);
-            opacity: 0.7;
+        .remove-team:hover {
+            background: #dc2626;
         }
 
-        @keyframes bounce {
-            0%, 20%, 60%, 100% { transform: translateY(0); }
-            40% { transform: translateY(-20px); }
-            80% { transform: translateY(-10px); }
+        .add-team-btn {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
         }
 
-        .animated {
-            animation: bounce 1s ease-in-out;
+        .add-team-btn:hover {
+            background: #059669;
+            transform: translateY(-1px);
+        }
+
+        /* History Panel */
+        .history-panel {
+            position: fixed;
+            top: 0;
+            left: -400px;
+            width: 400px;
+            height: 100vh;
+            background: var(--bg-card);
+            border-right: 1px solid var(--border);
+            z-index: 1000;
+            transition: left 0.3s ease;
+            overflow-y: auto;
+            backdrop-filter: blur(20px);
+        }
+
+        .history-panel.open {
+            left: 0;
+        }
+
+        .history-content {
+            padding: 2rem;
+        }
+
+        .history-item {
+            background: var(--bg-glass);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .history-item:hover {
+            border-color: var(--primary);
+        }
+
+        .history-team {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .history-time {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg-glass);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        .clear-history {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .clear-history:hover {
+            background: #dc2626;
+        }
+
+        /* Balance indicator */
+        .balance-indicator {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: var(--bg-glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .balance-indicator.balanced {
+            border-color: var(--success);
+            color: var(--success);
+        }
+
+        .balance-indicator.unbalanced {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* Mobile adjustments */
+        @media (max-width: 640px) {
+            .settings-panel,
+            .history-panel {
+                width: 100%;
+                right: -100%;
+                left: -100%;
+            }
+            
+            .settings-panel.open {
+                right: 0;
+            }
+            
+            .history-panel.open {
+                left: 0;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="main-container">
-        <!-- Wheel Section -->
-        <div class="wheel-section">
-            <h1>🎯 Team Spinner</h1>
-            <p>Who's hosting the next show & tell?</p>
-            
-            <div id="wheelContainer">
-                <div class="pointer"></div>
-                <canvas id="wheel" width="400" height="400"></canvas>
-            </div>
-            
-            <button class="spin-button" id="spinBtn" onclick="spin()">🎰 SPIN THE WHEEL</button>
-            
-            <div class="controls">
-                <button class="small-button" id="musicBtn" onclick="toggleMusic()">🎵 Music: ON</button>
-                <button class="small-button reset-button" onclick="resetStats()">🔄 Reset Stats</button>
-            </div>
-        </div>
+    <!-- Animated particles -->
+    <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
 
-        <!-- Announcement Section -->
-        <div class="announcement-section" id="announcementArea">
-            <div style="font-size: 1.2em; opacity: 0.8;">Ready to spin!</div>
-            <div style="font-size: 0.9em; margin-top: 10px;">Click the button to select your next host 🎯</div>
-        </div>
+    <div class="container">
+        <header class="header">
+            <h1 class="main-title">Team Spinner Pro</h1>
+            <p class="subtitle">Next-generation show & tell selection</p>
+        </header>
 
-        <!-- Stats Section -->
-        <div class="stats-section">
-            <div class="stats-header">📊 Statistics</div>
-            
-            <div class="stat-item">
-                <span>Total Spins</span>
-                <span class="stat-number" id="totalSpins">0</span>
-            </div>
-            
-            <div class="stat-item">
-                <span>Teams Hosted</span>
-                <span class="stat-number" id="teamsHosted">0</span>
-            </div>
-            
-            <div class="hosting-list">
-                <div style="font-weight: bold; margin-bottom: 10px; text-align: center;">🏆 Hosting History</div>
-                <div id="hostingHistory">
-                    <div style="opacity: 0.6; text-align: center; font-size: 0.8em;">No spins yet!</div>
+        <main class="main-layout">
+            <!-- Wheel Section -->
+            <section class="wheel-section">
+                <div class="wheel-card">
+                    <div class="status-indicator"></div>
+                    <div class="balance-indicator" id="balanceIndicator">⚖️ Balanced</div>
+                    
+                    <div class="wheel-container">
+                        <div class="modern-pointer"></div>
+                        <canvas id="wheel" width="600" height="600" style="width: 350px; height: 350px;"></canvas>
+                        
+                        <button class="spin-button" id="spinBtn" onclick="spin()">
+                            Launch Spinner
+                        </button>
+                        
+                        <div class="controls">
+                            <button class="control-button" id="musicBtn" onclick="toggleMusic()">
+                                🔊 Audio: ON
+                            </button>
+                            <button class="control-button" onclick="openSettings()">
+                                ⚙️ Settings
+                            </button>
+                            <button class="control-button" onclick="openHistory()">
+                                📊 History
+                            </button>
+                        </div>
+                    </div>
                 </div>
+            </section>
+
+            <!-- Results Section -->
+            <section class="results-section">
+                <div class="results-card" id="resultsCard">
+                    <div class="winner-title">Ready to Spin!</div>
+                    <div class="winner-subtitle">Press the button to select the next presenter</div>
+                    
+                    <div style="margin-top: 2rem;">
+                        <div style="width: 60px; height: 60px; border: 2px solid var(--border); border-radius: 50%; margin: 0 auto; display: flex; align-items: center; justify-content: center; font-size: 2rem;">
+                            🎯
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Confetti container -->
+    <div class="confetti-container" id="confetti"></div>
+
+    <!-- Settings Panel -->
+    <div class="settings-overlay" id="settingsOverlay" onclick="closeSettings()"></div>
+    <div class="settings-panel" id="settingsPanel">
+        <div class="settings-header">
+            <h2 class="settings-title">⚙️ Team Settings</h2>
+            <button class="close-btn" onclick="closeSettings()">✕</button>
+        </div>
+        <div class="settings-content">
+            <div class="setting-group">
+                <label class="setting-label">Teams Configuration</label>
+                <div id="teamsList"></div>
+                <button class="add-team-btn" onclick="addTeam()">+ Add Team</button>
             </div>
         </div>
     </div>
 
+    <!-- History Panel -->
+    <div class="settings-overlay" id="historyOverlay" onclick="closeHistory()"></div>
+    <div class="history-panel" id="historyPanel">
+        <div class="settings-header">
+            <h2 class="settings-title">📊 Selection History</h2>
+            <button class="close-btn" onclick="closeHistory()">✕</button>
+        </div>
+        <div class="history-content">
+            <div class="stats-grid" id="statsGrid"></div>
+            <div id="historyList"></div>
+            <button class="clear-history" onclick="clearHistory()">Clear History</button>
+        </div>
+    </div>
+
     <script>
-        const teams = [
-            { name: 'Visual Design', color: '#45B7D1' },
-            { name: 'Out of Meeting', color: '#4ECDC4' },
-            { name: 'Core UI Team', color: '#FF6B6B' },
-            { name: 'AI', color: '#FFA07A' },
-            { name: 'Visual Design', color: '#45B7D1' },
-            { name: 'Out of Meeting', color: '#4ECDC4' },
-            { name: 'Core UI Team', color: '#FF6B6B' },
-            { name: 'UXR', color: '#96CEB4' }
+        // Teams with modern gradient colors - now stored in localStorage
+        let teams = JSON.parse(localStorage.getItem('spinner-teams')) || [
+            { id: 1, name: 'Visual Design', size: 4, color: '#6366f1', gradient: 'linear-gradient(135deg, #6366f1, #8b5cf6)', selections: 0 },
+            { id: 2, name: 'Out of Meeting', size: 5, color: '#06b6d4', gradient: 'linear-gradient(135deg, #06b6d4, #3b82f6)', selections: 0 },
+            { id: 3, name: 'Core UI Team', size: 4, color: '#10b981', gradient: 'linear-gradient(135deg, #10b981, #059669)', selections: 0 },
+            { id: 4, name: 'AI', size: 1, color: '#f59e0b', gradient: 'linear-gradient(135deg, #f59e0b, #d97706)', selections: 0 }
         ];
 
-        const hostTitles = [
-            "🎭 The Chosen One",
-            "🎪 Master of Ceremonies", 
-            "⚡ The Unlucky Legend",
-            "🌟 Presentation Overlord",
-            "🎯 The Selected Sacrifice",
-            "🔥 Show & Tell Champion"
+        // History and statistics
+        let selectionHistory = JSON.parse(localStorage.getItem('spinner-history')) || [];
+        let nextTeamId = Math.max(...teams.map(t => t.id), 0) + 1;
+
+        const modernTitles = [
+            "🎉 Selected!",
+            "⭐ You're Up!",
+            "🚀 Show Time!",
+            "✨ Spotlight On!",
+            "🎯 Target Acquired!",
+            "💫 Time to Shine!",
+            "🌟 Your Moment!",
+            "🎪 Center Stage!",
+            "🏆 Winner!"
         ];
 
-        const gifs = [
-            // Epic Movies
-            'https://media.giphy.com/media/3o84sw9CmwYpAnRRni/giphy.gif', // Star Wars celebration
-            'https://media.giphy.com/media/1136UBdSNn6Bu8/giphy.gif', // Indiana Jones
-            'https://media.giphy.com/media/7rj2ZgttvgomY/giphy.gif', // Back to the Future
-            'https://media.giphy.com/media/l4FGGafcOHmrlQxG0/giphy.gif', // Matrix Neo
-            'https://media.giphy.com/media/3oKIPf3C7HqqYBVcCk/giphy.gif', // Iron Man
-            'https://media.giphy.com/media/35HTaxVJWzp2QOShct/giphy.gif', // Avengers
-            
-            // Disney/Pixar
-            'https://media.giphy.com/media/VIPfTy8y1Lc5iREYDS/giphy.gif', // Lion King
-            'https://media.giphy.com/media/26BRBKqUiq586bRVm/giphy.gif', // Finding Nemo
-            'https://media.giphy.com/media/WuGSL4LFUMQU/giphy.gif', // Monsters Inc
-            'https://media.giphy.com/media/3o7qE2VAxuXWeyvJIY/giphy.gif', // Toy Story
-            'https://media.giphy.com/media/1kfhoNWHS7jMg/giphy.gif', // Mickey Mouse
-            
-            // SpongeBob
-            'https://media.giphy.com/media/l41lGvinEgARjB2HC/giphy.gif', // SpongeBob excited
-            'https://media.giphy.com/media/3o6UBlHJQT19wSgJQk/giphy.gif', // SpongeBob rainbow
-            'https://media.giphy.com/media/3oriO5t2QB4IPKgxHi/giphy.gif', // SpongeBob dancing
-            
-            // Ren & Stimpy
-            'https://media.giphy.com/media/12msOFU8oL1eww/giphy.gif', // Ren & Stimpy
-            'https://media.giphy.com/media/26tPnAAJxXTvpLwJy/giphy.gif', // Stimpy happy
-            
-            // Classic reactions
-            'https://media.giphy.com/media/26BRwW3ckGjcZmsxO/giphy.gif', // Simpsons Homer
-            'https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif', // Bugs Bunny
-            'https://media.giphy.com/media/3o7abKhOpu0NwenH3O/giphy.gif', // General celebration
-            'https://media.giphy.com/media/26FLdmIp6wJr91JAI/giphy.gif'  // Victory dance
+        // Same comprehensive GIF collection
+        const officeLifeGifs = [
+            'https://media.giphy.com/media/26u4lOMA8JKSnL9Uk/giphy.gif',
+            'https://media.giphy.com/media/Is1O1TWV0LEJi/giphy.gif',
+            'https://media.giphy.com/media/l0HlvtIPzPdt2usKs/giphy.gif',
+            'https://media.giphy.com/media/5wWf7GW1AzV6pF3MaVW/giphy.gif',
+            'https://media.giphy.com/media/l3q2K5jinAlChoCLS/giphy.gif',
+            'https://media.giphy.com/media/26gspvTRJXosDwi1a/giphy.gif',
+            'https://media.giphy.com/media/3o7aTskHEUdgCQAXde/giphy.gif',
+            'https://media.giphy.com/media/yJFeycRK2DB4c/giphy.gif',
+            'https://media.giphy.com/media/26gsjCZpPolPr3sBy/giphy.gif',
+            'https://media.giphy.com/media/xT1XGESDlxj0GwoDRe/giphy.gif'
         ];
 
+        const popCultureClassicsGifs = [
+            'https://media.giphy.com/media/3o84sw9CmwYpAnRRni/giphy.gif',
+            'https://media.giphy.com/media/1136UBdSNn6Bu8/giphy.gif',
+            'https://media.giphy.com/media/l4FGGafcOHmrlQxG0/giphy.gif',
+            'https://media.giphy.com/media/7rj2ZgttvgomY/giphy.gif',
+            'https://media.giphy.com/media/3oKIPf3C7HqqYBVcCk/giphy.gif',
+            'https://media.giphy.com/media/35HTaxVJWzp2QOShct/giphy.gif',
+            'https://media.giphy.com/media/26AHPxxnSw1L9T1rW/giphy.gif',
+            'https://media.giphy.com/media/d3mlE7uhX8KFgEmY/giphy.gif',
+            'https://media.giphy.com/media/26FLdmIp6wJr91JAI/giphy.gif',
+            'https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif'
+        ];
+
+        const modernMemesGifs = [
+            'https://media.giphy.com/media/NEvPzZ8bd1V4Y/giphy.gif',
+            'https://media.giphy.com/media/3oriO13KTkzPwTykp2/giphy.gif',
+            'https://media.giphy.com/media/XreQmk7ETCak0/giphy.gif',
+            'https://media.giphy.com/media/3o85xIO33l7RlmLR4I/giphy.gif',
+            'https://media.giphy.com/media/26BRrSvJUa0crqw4E/giphy.gif',
+            'https://media.giphy.com/media/payr6u9f4Pa5zYGDid/giphy.gif',
+            'https://media.giphy.com/media/fDO2Nk0ImzvvW/giphy.gif',
+            'https://media.giphy.com/media/26FPn4rR1damB0MQo/giphy.gif',
+            'https://media.giphy.com/media/5GoVLqeAOo6PK/giphy.gif',
+            'https://media.giphy.com/media/8VrtCswiLDNnO/giphy.gif'
+        ];
+
+        const designerLifeGifs = [
+            'https://media.giphy.com/media/13GIgrGdslD9oQ/giphy.gif',
+            'https://media.giphy.com/media/26tn33aiTi1jkl6H6/giphy.gif',
+            'https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif',
+            'https://media.giphy.com/media/XIqCQx02E1U9W/giphy.gif',
+            'https://media.giphy.com/media/l3q2XhfQ8oCkm1Ts4/giphy.gif',
+            'https://media.giphy.com/media/3o7qE1YN7aBOFPRw8E/giphy.gif',
+            'https://media.giphy.com/media/26gsgWH4lnurglMWY/giphy.gif',
+            'https://media.giphy.com/media/26BRzozg4TCBXv6QU/giphy.gif',
+            'https://media.giphy.com/media/3o7abKhOpu0NwenH3O/giphy.gif',
+            'https://media.giphy.com/media/26gspjl5bxzhSdJtK/giphy.gif'
+        ];
+
+        const nostalgiaAndCartoonGifs = [
+            'https://media.giphy.com/media/26BRwW3ckGjcZmsxO/giphy.gif',
+            'https://media.giphy.com/media/3oriO5t2QB4IPKgxHi/giphy.gif',
+            'https://media.giphy.com/media/l41lGvinEgARjB2HC/giphy.gif',
+            'https://media.giphy.com/media/3o6UBlHJQT19wSgJQk/giphy.gif',
+            'https://media.giphy.com/media/VIPfTy8y1Lc5iREYDS/giphy.gif',
+            'https://media.giphy.com/media/26BRBKqUiq586bRVm/giphy.gif',
+            'https://media.giphy.com/media/WuGSL4LFUMQU/giphy.gif',
+            'https://media.giphy.com/media/1kfhoNWHS7jMg/giphy.gif',
+            'https://media.giphy.com/media/12msOFU8oL1eww/giphy.gif',
+            'https://media.giphy.com/media/26tPnAAJxXTvpLwJy/giphy.gif'
+        ];
+
+        const allGifs = [...officeLifeGifs, ...popCultureClassicsGifs, ...modernMemesGifs, ...designerLifeGifs, ...nostalgiaAndCartoonGifs];
+        
+        let recentlyUsedGifs = [];
+        const maxRecentGifs = 15;
+        
         const canvas = document.getElementById('wheel');
         const ctx = canvas.getContext('2d');
         
         let currentRotation = 0;
         let spinning = false;
         let musicEnabled = true;
-        let hostingHistory = JSON.parse(localStorage.getItem('teamHostingHistory')) || {};
-        let totalSpins = parseInt(localStorage.getItem('teamTotalSpins')) || 0;
+
+        // Settings Panel Functions
+        function openSettings() {
+            document.getElementById('settingsPanel').classList.add('open');
+            document.getElementById('settingsOverlay').classList.add('open');
+            renderTeamsSettings();
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsPanel').classList.remove('open');
+            document.getElementById('settingsOverlay').classList.remove('open');
+        }
+
+        function renderTeamsSettings() {
+            const teamsList = document.getElementById('teamsList');
+            teamsList.innerHTML = teams.map(team => `
+                <div class="team-item" data-id="${team.id}">
+                    <div class="team-controls">
+                        <input type="text" class="team-input" value="${team.name}" onchange="updateTeamName(${team.id}, this.value)" placeholder="Team name">
+                        <input type="number" class="size-input" value="${team.size}" min="1" max="10" onchange="updateTeamSize(${team.id}, this.value)">
+                        <input type="color" class="color-input" value="${team.color}" onchange="updateTeamColor(${team.id}, this.value)">
+                        <button class="remove-team" onclick="removeTeam(${team.id})">✕</button>
+                    </div>
+                    <div style="color: var(--text-secondary); font-size: 0.8rem;">Selected ${team.selections || 0} times</div>
+                </div>
+            `).join('');
+        }
+
+        function addTeam() {
+            const colors = ['#6366f1', '#06b6d4', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#f97316'];
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            
+            const newTeam = {
+                id: nextTeamId++,
+                name: 'New Team',
+                size: 3,
+                color: randomColor,
+                gradient: `linear-gradient(135deg, ${randomColor}, ${randomColor}dd)`,
+                selections: 0
+            };
+            
+            teams.push(newTeam);
+            saveTeams();
+            renderTeamsSettings();
+            updateWheel();
+            updateBalanceIndicator();
+        }
+
+        function removeTeam(id) {
+            if (teams.length <= 1) {
+                alert('You must have at least one team!');
+                return;
+            }
+            teams = teams.filter(team => team.id !== id);
+            saveTeams();
+            renderTeamsSettings();
+            updateWheel();
+            updateBalanceIndicator();
+        }
+
+        function updateTeamName(id, name) {
+            const team = teams.find(t => t.id === id);
+            if (team) {
+                team.name = name || 'Unnamed Team';
+                saveTeams();
+                updateWheel();
+            }
+        }
+
+        function updateTeamSize(id, size) {
+            const team = teams.find(t => t.id === id);
+            if (team) {
+                team.size = Math.max(1, parseInt(size) || 1);
+                saveTeams();
+                updateWheel();
+                updateBalanceIndicator();
+            }
+        }
+
+        function updateTeamColor(id, color) {
+            const team = teams.find(t => t.id === id);
+            if (team) {
+                team.color = color;
+                team.gradient = `linear-gradient(135deg, ${color}, ${color}dd)`;
+                saveTeams();
+                updateWheel();
+            }
+        }
+
+        function saveTeams() {
+            localStorage.setItem('spinner-teams', JSON.stringify(teams));
+        }
+
+        // History Panel Functions
+        function openHistory() {
+            document.getElementById('historyPanel').classList.add('open');
+            document.getElementById('historyOverlay').classList.add('open');
+            renderHistory();
+        }
+
+        function closeHistory() {
+            document.getElementById('historyPanel').classList.remove('open');
+            document.getElementById('historyOverlay').classList.remove('open');
+        }
+
+        function renderHistory() {
+            renderStats();
+            renderHistoryList();
+        }
+
+        function renderStats() {
+            const totalSelections = selectionHistory.length;
+            const lastSelection = selectionHistory.length > 0 ? 
+                new Date(selectionHistory[selectionHistory.length - 1].timestamp).toLocaleDateString() : 'Never';
+            
+            const teamStats = teams.map(team => ({
+                name: team.name,
+                count: team.selections || 0,
+                percentage: totalSelections > 0 ? Math.round(((team.selections || 0) / totalSelections) * 100) : 0
+            }));
+
+            const mostSelected = teamStats.reduce((max, team) => team.count > max.count ? team : max, {count: 0});
+
+            document.getElementById('statsGrid').innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-number">${totalSelections}</div>
+                    <div class="stat-label">Total Spins</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${mostSelected.name || 'None'}</div>
+                    <div class="stat-label">Most Selected</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${lastSelection}</div>
+                    <div class="stat-label">Last Spin</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${isBalanced() ? 'Yes' : 'No'}</div>
+                    <div class="stat-label">Balanced</div>
+                </div>
+            `;
+        }
+
+        function renderHistoryList() {
+            const historyList = document.getElementById('historyList');
+            
+            if (selectionHistory.length === 0) {
+                historyList.innerHTML = '<div style="text-align: center; color: var(--text-secondary); padding: 2rem;">No spins yet! Start spinning to see history.</div>';
+                return;
+            }
+
+            historyList.innerHTML = selectionHistory
+                .slice(-20) // Show last 20 entries
+                .reverse()
+                .map(entry => `
+                    <div class="history-item">
+                        <div class="history-team">${entry.teamName}</div>
+                        <div class="history-time">${new Date(entry.timestamp).toLocaleString()}</div>
+                    </div>
+                `).join('');
+        }
+
+        function clearHistory() {
+            if (confirm('Are you sure you want to clear all selection history?')) {
+                selectionHistory = [];
+                teams.forEach(team => team.selections = 0);
+                localStorage.removeItem('spinner-history');
+                saveTeams();
+                renderHistory();
+                updateBalanceIndicator();
+            }
+        }
+
+        // Smart Balancing Functions
+        function isBalanced() {
+            if (teams.length <= 1) return true;
+            
+            const totalSelections = selectionHistory.length;
+            if (totalSelections < teams.length * 2) return true; // Not enough data
+            
+            const avgSelections = totalSelections / teams.length;
+            const variance = teams.reduce((sum, team) => {
+                const diff = (team.selections || 0) - avgSelections;
+                return sum + (diff * diff);
+            }, 0) / teams.length;
+            
+            return Math.sqrt(variance) < avgSelections * 0.3; // 30% threshold
+        }
+
+        function updateBalanceIndicator() {
+            const indicator = document.getElementById('balanceIndicator');
+            const balanced = isBalanced();
+            
+            indicator.textContent = balanced ? '⚖️ Balanced' : '⚠️ Unbalanced';
+            indicator.className = `balance-indicator ${balanced ? 'balanced' : 'unbalanced'}`;
+        }
+
+        function getSmartWeightedTeam() {
+            if (selectionHistory.length < teams.length) {
+                // Early spins - just use normal probability
+                return null;
+            }
+
+            // Calculate weights based on how underselected each team is
+            const totalSelections = selectionHistory.length;
+            const avgSelections = totalSelections / teams.length;
+            
+            const weightedTeams = teams.map(team => {
+                const selections = team.selections || 0;
+                const underselection = Math.max(0, avgSelections - selections);
+                const weight = team.size + (underselection * 2); // Boost underselected teams
+                return { ...team, weight };
+            });
+
+            const totalWeight = weightedTeams.reduce((sum, team) => sum + team.weight, 0);
+            const random = Math.random() * totalWeight;
+            
+            let cumulativeWeight = 0;
+            for (const team of weightedTeams) {
+                cumulativeWeight += team.weight;
+                if (random <= cumulativeWeight) {
+                    return team;
+                }
+            }
+            
+            return weightedTeams[0];
+        }
+
+        function addToHistory(team) {
+            const entry = {
+                teamId: team.id,
+                teamName: team.name,
+                timestamp: Date.now()
+            };
+            
+            selectionHistory.push(entry);
+            team.selections = (team.selections || 0) + 1;
+            
+            localStorage.setItem('spinner-history', JSON.stringify(selectionHistory));
+            saveTeams();
+            updateBalanceIndicator();
+        }
+
+        function updateWheel() {
+            // Recalculate team slices when teams change
+            const totalSize = teams.reduce((sum, team) => sum + team.size, 0);
+            let cumulativeAngle = 0;
+            teamSlices.length = 0; // Clear existing slices
+            
+            teams.forEach(team => {
+                const sliceAngle = (2 * Math.PI * team.size) / totalSize;
+                const slice = {
+                    ...team,
+                    startAngle: cumulativeAngle,
+                    endAngle: cumulativeAngle + sliceAngle,
+                    sliceAngle: sliceAngle
+                };
+                cumulativeAngle += sliceAngle;
+                teamSlices.push(slice);
+            });
+            
+            drawWheel(currentRotation);
+        }
+
+        // Calculate proportional slices
+        const totalSize = teams.reduce((sum, team) => sum + team.size, 0);
+        let cumulativeAngle = 0;
+        const teamSlices = teams.map(team => {
+            const sliceAngle = (2 * Math.PI * team.size) / totalSize;
+            const slice = {
+                ...team,
+                startAngle: cumulativeAngle,
+                endAngle: cumulativeAngle + sliceAngle,
+                sliceAngle: sliceAngle
+            };
+            cumulativeAngle += sliceAngle;
+            return slice;
+        });
 
         function drawWheel(rotation = 0) {
-            const centerX = 200;
-            const centerY = 200;
-            const radius = 180;
-            const sliceAngle = (2 * Math.PI) / teams.length;
+            const centerX = 300;
+            const centerY = 300;
+            const radius = 280;
             
-            ctx.clearRect(0, 0, 400, 400);
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            ctx.clearRect(0, 0, 600, 600);
             
-            for (let i = 0; i < teams.length; i++) {
-                const startAngle = i * sliceAngle + rotation;
-                const endAngle = (i + 1) * sliceAngle + rotation;
+            teamSlices.forEach((slice, index) => {
+                const startAngle = slice.startAngle + rotation;
+                const endAngle = slice.endAngle + rotation;
                 
                 ctx.beginPath();
                 ctx.moveTo(centerX, centerY);
                 ctx.arc(centerX, centerY, radius, startAngle, endAngle);
-                ctx.fillStyle = teams[i].color;
+                
+                // Modern gradient fill
+                const gradient = ctx.createRadialGradient(centerX, centerY, 50, centerX, centerY, radius);
+                gradient.addColorStop(0, slice.color + 'CC');
+                gradient.addColorStop(0.7, slice.color);
+                gradient.addColorStop(1, slice.color + 'DD');
+                
+                ctx.fillStyle = gradient;
                 ctx.fill();
-                ctx.strokeStyle = '#fff';
+                
+                // Clean border
+                ctx.strokeStyle = '#ffffff';
                 ctx.lineWidth = 3;
                 ctx.stroke();
                 
-                // Add text
+                // Modern text
                 ctx.save();
                 ctx.translate(centerX, centerY);
-                ctx.rotate(startAngle + sliceAngle / 2);
-                ctx.fillStyle = 'white';
-                ctx.font = 'bold 16px Arial';
-                ctx.textAlign = 'center';
-                ctx.shadowColor = 'rgba(0,0,0,0.5)';
-                ctx.shadowBlur = 2;
+                const midAngle = (startAngle + endAngle) / 2;
+                ctx.rotate(midAngle);
                 
-                // Split text into multiple lines if needed
-                const text = teams[i].name;
+                const baseFontSize = slice.size === 1 ? 20 : 26;
+                ctx.fillStyle = '#ffffff';
+                ctx.font = `600 ${baseFontSize}px "Inter", sans-serif`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                
+                // Clean text shadow
+                ctx.shadowColor = 'rgba(0,0,0,0.5)';
+                ctx.shadowBlur = 4;
+                ctx.shadowOffsetX = 1;
+                ctx.shadowOffsetY = 1;
+                
+                const text = slice.name;
                 const words = text.split(' ');
-                const lineHeight = 20;
+                const lineHeight = baseFontSize + 4;
+                const textRadius = slice.size === 1 ? radius * 0.6 : radius * 0.65;
                 
                 if (words.length <= 2) {
-                    ctx.fillText(text, radius * 0.65, 0);
+                    ctx.fillText(text, textRadius, 0);
                 } else {
-                    // Multi-line text for longer team names
                     const line1 = words.slice(0, Math.ceil(words.length / 2)).join(' ');
                     const line2 = words.slice(Math.ceil(words.length / 2)).join(' ');
-                    ctx.fillText(line1, radius * 0.65, -lineHeight / 2);
-                    ctx.fillText(line2, radius * 0.65, lineHeight / 2);
+                    
+                    ctx.fillText(line1, textRadius, -lineHeight / 2);
+                    ctx.fillText(line2, textRadius, lineHeight / 2);
                 }
                 
                 ctx.restore();
+            });
+        }
+
+        function getRandomGif() {
+            const availableGifs = allGifs.filter(gif => !recentlyUsedGifs.includes(gif));
+            
+            if (availableGifs.length === 0) {
+                recentlyUsedGifs = recentlyUsedGifs.slice(-5);
+                return allGifs.filter(gif => !recentlyUsedGifs.includes(gif))[0];
             }
+            
+            const selectedGif = availableGifs[Math.floor(Math.random() * availableGifs.length)];
+            
+            recentlyUsedGifs.push(selectedGif);
+            if (recentlyUsedGifs.length > maxRecentGifs) {
+                recentlyUsedGifs.shift();
+            }
+            
+            return selectedGif;
+        }
+
+        function createConfetti() {
+            const container = document.getElementById('confetti');
+            const colors = ['#6366f1', '#8b5cf6', '#06b6d4', '#10b981', '#f59e0b', '#ef4444', '#f97316'];
+            
+            // Create LOTS of confetti pieces all over the screen
+            for (let i = 0; i < 150; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti-piece';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = Math.random() * 1 + 's';
+                confetti.style.animationDuration = (Math.random() * 2 + 3) + 's';
+                
+                // Random shapes and sizes
+                const size = Math.random() * 8 + 6;
+                confetti.style.width = size + 'px';
+                confetti.style.height = size + 'px';
+                
+                if (Math.random() > 0.5) {
+                    confetti.style.borderRadius = '50%'; // Circles
+                } else {
+                    confetti.style.borderRadius = '0'; // Squares
+                }
+                
+                container.appendChild(confetti);
+            }
+            
+            // Clear confetti after animation
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 6000);
         }
 
         function spin() {
             if (spinning) return;
             
             spinning = true;
-            document.getElementById('spinBtn').disabled = true;
-            document.getElementById('announcementArea').innerHTML = '<div style="font-size: 1.5em;">🎰 Spinning...</div><div style="font-size: 0.9em; margin-top: 10px;">The wheel is deciding your fate!</div>';
+            const button = document.getElementById('spinBtn');
+            button.disabled = true;
+            button.innerHTML = '<div class="loading-spinner"></div> Spinning...';
             
-            playSpinSound();
+            document.getElementById('resultsCard').innerHTML = `
+                <div class="winner-title">Processing...</div>
+                <div class="winner-subtitle">Selecting the next presenter</div>
+                <div class="loading-spinner"></div>
+                <div class="loading-text">Analyzing team availability...</div>
+            `;
             
-            const spins = 5 + Math.random() * 5;
+            playModernSpinSound();
+            
+            const spins = 6 + Math.random() * 4;
             const finalAngle = Math.random() * 2 * Math.PI;
             const totalRotation = spins * 2 * Math.PI + finalAngle;
             const targetRotation = currentRotation + totalRotation;
             
             const startTime = Date.now();
-            const duration = 3000;
+            const duration = 4000;
             const startRotation = currentRotation;
             
             function animate() {
                 const elapsed = Date.now() - startTime;
                 const progress = Math.min(elapsed / duration, 1);
                 
-                // Easing function
-                const easeOut = 1 - Math.pow(1 - progress, 3);
+                const easeOut = 1 - Math.pow(1 - progress, 4);
                 const rotation = startRotation + totalRotation * easeOut;
                 
                 drawWheel(rotation);
@@ -408,30 +1479,43 @@
                 } else {
                     currentRotation = targetRotation;
                     
-                    // Calculate winner based on where wheel actually landed
-                    const sliceAngle = (2 * Math.PI) / teams.length;
+                    // Smart winner selection
+                    let winner = getSmartWeightedTeam();
                     
-                    // The pointer is at the top (12 o'clock position)
-                    // We need to find which slice the pointer is pointing to
-                    const pointerAngle = Math.PI / 2; // 90 degrees (top of wheel)
-                    const adjustedRotation = (-currentRotation + pointerAngle) % (2 * Math.PI);
-                    const normalizedAngle = adjustedRotation < 0 ? adjustedRotation + 2 * Math.PI : adjustedRotation;
+                    if (!winner) {
+                        // Fall back to normal wheel calculation
+                        const degrees = (currentRotation * 180 / Math.PI) % 360;
+                        const normalizedDegrees = degrees < 0 ? degrees + 360 : degrees;
+                        
+                        const totalWeight = teams.reduce((sum, team) => sum + team.size, 0);
+                        let cumulativeWeight = 0;
+                        
+                        for (let i = 0; i < teams.length; i++) {
+                            const team = teams[i];
+                            const segmentStart = (cumulativeWeight / totalWeight) * 360;
+                            const segmentEnd = ((cumulativeWeight + team.size) / totalWeight) * 360;
+                            
+                            const pointerDegree = (normalizedDegrees + 270) % 360;
+                            
+                            if (pointerDegree >= segmentStart && pointerDegree < segmentEnd) {
+                                winner = team;
+                                break;
+                            }
+                            
+                            cumulativeWeight += team.size;
+                        }
+                        
+                        if (!winner) winner = teams[0];
+                    }
                     
-                    const sliceIndex = Math.floor(normalizedAngle / sliceAngle) % teams.length;
-                    const winner = teams[sliceIndex];
-                    
-                    // Debug logging
-                    console.log('Current rotation:', currentRotation);
-                    console.log('Normalized angle:', normalizedAngle);
-                    console.log('Slice index:', sliceIndex);
-                    console.log('Winner:', winner.name);
-                    
-                    showWinner(winner);
-                    updateStats(winner);
-                    
-                    spinning = false;
-                    document.getElementById('spinBtn').disabled = false;
-                    document.getElementById('spinBtn').textContent = '🎰 SPIN AGAIN';
+                    setTimeout(() => {
+                        addToHistory(winner);
+                        showWinner(winner);
+                        createConfetti();
+                        spinning = false;
+                        button.disabled = false;
+                        button.innerHTML = 'Launch Spinner';
+                    }, 800);
                 }
             }
             
@@ -439,104 +1523,64 @@
         }
 
         function showWinner(winner) {
-            const randomTitle = hostTitles[Math.floor(Math.random() * hostTitles.length)];
-            const randomGif = gifs[Math.floor(Math.random() * gifs.length)];
+            const randomTitle = modernTitles[Math.floor(Math.random() * modernTitles.length)];
+            const randomGif = getRandomGif();
             
-            document.getElementById('announcementArea').innerHTML = `
-                <div class="host-title">${randomTitle}</div>
-                <div class="gif-container">
-                    <img src="${randomGif}" alt="Reaction GIF">
+            const resultsCard = document.getElementById('resultsCard');
+            resultsCard.innerHTML = `
+                <div class="winner-title">${randomTitle}</div>
+                <div class="gif-frame" id="winnerGif">
+                    <img src="${randomGif}" alt="Celebration!" onload="this.parentElement.classList.add('show')">
                 </div>
             `;
             
-            playWinSound();
-        }
-
-        function updateStats(winner) {
-            totalSpins++;
-            
-            // Normalize team names for consistent tracking
-            let teamName = winner.name;
-            if (teamName === 'Core UI Team') teamName = 'Core UI';
-            if (teamName === 'Out of Meeting') teamName = 'Out of Meeting';
-            if (teamName === 'Visual Design') teamName = 'Visual Design';
-            if (teamName === 'UXR') teamName = 'UXR';
-            if (teamName === 'AI') teamName = 'AI';
-            
-            hostingHistory[teamName] = (hostingHistory[teamName] || 0) + 1;
-            
-            localStorage.setItem('teamHostingHistory', JSON.stringify(hostingHistory));
-            localStorage.setItem('teamTotalSpins', totalSpins.toString());
-            
-            refreshStatsDisplay();
-        }
-
-        function refreshStatsDisplay() {
-            document.getElementById('totalSpins').textContent = totalSpins;
-            document.getElementById('teamsHosted').textContent = Object.keys(hostingHistory).length;
-            
-            const historyContainer = document.getElementById('hostingHistory');
-            const entries = Object.entries(hostingHistory).sort(([,a], [,b]) => b - a);
-            
-            if (entries.length === 0) {
-                historyContainer.innerHTML = '<div style="opacity: 0.6; text-align: center; font-size: 0.8em;">No spins yet!</div>';
-            } else {
-                historyContainer.innerHTML = entries.map(([name, count]) => 
-                    `<div class="hosting-entry">
-                        <span>${name}</span>
-                        <span>${count}x</span>
-                    </div>`
-                ).join('');
-            }
+            playModernWinSound();
         }
 
         function toggleMusic() {
             musicEnabled = !musicEnabled;
-            document.getElementById('musicBtn').textContent = `🎵 Music: ${musicEnabled ? 'ON' : 'OFF'}`;
+            document.getElementById('musicBtn').textContent = `🔊 Audio: ${musicEnabled ? 'ON' : 'OFF'}`;
         }
 
-        function resetStats() {
-            if (confirm('Reset all statistics? This cannot be undone!')) {
-                hostingHistory = {};
-                totalSpins = 0;
-                
-                localStorage.removeItem('teamHostingHistory');
-                localStorage.removeItem('teamTotalSpins');
-                
-                refreshStatsDisplay(); // Trigger stats update
-                
-                document.getElementById('announcementArea').innerHTML = '<div style="font-size: 1.2em;">📊 Stats reset!</div><div style="font-size: 0.9em; margin-top: 10px;">Ready for a fresh start 🚀</div>';
-            }
-        }
-
-        // Sound functions
-        function playSpinSound() {
+        // Modern sound effects
+        function playModernSpinSound() {
             if (!musicEnabled) return;
             try {
                 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // Create a modern whoosh sound
                 const oscillator = audioContext.createOscillator();
                 const gainNode = audioContext.createGain();
+                const filter = audioContext.createBiquadFilter();
                 
-                oscillator.connect(gainNode);
+                oscillator.connect(filter);
+                filter.connect(gainNode);
                 gainNode.connect(audioContext.destination);
                 
-                oscillator.frequency.setValueAtTime(220, audioContext.currentTime);
-                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 2);
                 
-                oscillator.type = 'triangle';
+                filter.type = 'lowpass';
+                filter.frequency.setValueAtTime(2000, audioContext.currentTime);
+                filter.frequency.exponentialRampToValueAtTime(500, audioContext.currentTime + 2);
+                
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 2);
+                
+                oscillator.type = 'sine';
                 oscillator.start();
-                oscillator.stop(audioContext.currentTime + 0.5);
+                oscillator.stop(audioContext.currentTime + 2);
             } catch (e) {
-                // Audio not available
+                console.log('Audio not available');
             }
         }
 
-        function playWinSound() {
+        function playModernWinSound() {
             if (!musicEnabled) return;
             try {
                 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                const notes = [523, 659, 784];
+                const notes = [523, 659, 784, 1047]; // C, E, G, C
+                
                 notes.forEach((freq, i) => {
                     setTimeout(() => {
                         const oscillator = audioContext.createOscillator();
@@ -547,22 +1591,34 @@
                         
                         oscillator.frequency.setValueAtTime(freq, audioContext.currentTime);
                         gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                        gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.5);
                         
                         oscillator.type = 'triangle';
                         oscillator.start();
-                        oscillator.stop(audioContext.currentTime + 0.2);
+                        oscillator.stop(audioContext.currentTime + 0.5);
                     }, i * 100);
                 });
             } catch (e) {
-                // Audio not available
+                console.log('Audio not available');
             }
         }
 
         // Initialize
         function init() {
-            drawWheel();
-            refreshStatsDisplay(); // Initialize stats display
+            // Load saved data
+            const savedTeams = localStorage.getItem('spinner-teams');
+            if (savedTeams) {
+                teams = JSON.parse(savedTeams);
+                nextTeamId = Math.max(...teams.map(t => t.id), 0) + 1;
+            }
+            
+            const savedHistory = localStorage.getItem('spinner-history');
+            if (savedHistory) {
+                selectionHistory = JSON.parse(savedHistory);
+            }
+            
+            updateWheel();
+            updateBalanceIndicator();
         }
 
         init();
